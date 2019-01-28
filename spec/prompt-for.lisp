@@ -115,19 +115,19 @@
 
 #?(do-with-prompt-input((0 1)(2 3))4)
 :expanded-to
-(PROMPT-FOR::WITH-PROMPT-OUTPUT-SYNTAX(0)
-  (PROG(2)
-    :REC
-    (APPLY #'FORMAT T 1)
-    (FORCE-OUTPUT)
-    (HANDLER-BIND((ERROR(LAMBDA(PROMPT-FOR::C)
-			  (FORMAT T "~&Invalid input. ~S"PROMPT-FOR::C)
-			  (CLEAR-INPUT)
-			  (GO :REC))))
-      (SETF 2 3))
-    (CLEAR-INPUT)
-    4
-    (GO :REC)))
+(PROG((0 *STANDARD-OUTPUT*)
+      2)
+  :REC
+  (APPLY #'FORMAT T 1)
+  (FORCE-OUTPUT)
+  (HANDLER-BIND((ERROR(LAMBDA(PROMPT-FOR::C)
+			(FORMAT T "~&Invalid input. ~S"PROMPT-FOR::C)
+			(CLEAR-INPUT)
+			(GO :REC))))
+    (SETF 2 3))
+  (CLEAR-INPUT)
+  4
+  (GO :REC))
 
 ;;;; Arguments and Values:
 
