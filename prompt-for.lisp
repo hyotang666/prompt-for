@@ -84,3 +84,41 @@
 	(return in)
 	(format out"~&~S is type of ~S, not satisfies ~S."
 		in(type-of in) pred)))))
+
+(defmethod prompt-for((s (eql :secret))&rest args)
+  "Get user input string silently."
+  (let((sentinel(gensym)))
+    (multiple-value-bind(reader args)(retrieve-keyword-arg :by args sentinel)
+      (unless(eq reader sentinel)
+	(error "Keyword parameter :BY is invalid for :SECRET."))
+      (do-with-prompt-input((out args)
+			    (in(secret-input)))
+	(if(equal "" in)
+	  (format out "~&empty string is not allowed.")
+	  (return in))))))
+
+;;; Stolen from https://stackoverflow.com/questions/39797560/common-lisp-how-to-mask-keyboard-input
+#.(or ; in order to avoid #-
+    #+sbcl
+    '(progn
+       (defun echo-off()
+	 (let((tm(sb-posix:tcgetattr sb-sys:*tty*)))
+	   (setf(sb-posix:termios-lflag tm)
+	     (logandc2(sb-posix:termios-lflag tm)sb-posix:echo))
+	   (sb-posix:tcsetattr sb-sys:*tty* sb-posix:tcsanow tm)))
+       (defun echo-on()
+	 (let((tm(sb-posix:tcgetattr sb-sys:*tty*)))
+	   (setf(sb-posix:termios-lflag tm)
+	     (logior(sb-posix:termios-lflag tm)sb-posix:echo))
+	   (sb-posix:tcsetattr sb-sys:*tty* sb-posix:tcsanow tm)))
+       (defun secret-input()
+	 (echo-off)
+	 (unwind-protect(progn (clear-input sb-sys:*tty*)
+			       (read-line sb-sys:*tty*))
+	   (echo-on))))
+
+    ;; as default
+    (warn "PROMPT-FOR: the method specialized :SECRET is not supported in ~A"(lisp-implementation-type))
+    '(defun secret-input()
+       (error "not supported in ~A"(lisp-implementation-type)))
+    )
