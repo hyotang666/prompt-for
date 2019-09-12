@@ -9,7 +9,7 @@
 (defgeneric prompt-for(target &rest args))
 
 (defmethod prompt-for :around (target &rest args)
-  (declare(ignore args))
+  (declare(ignore args target))
   (LET*((*STANDARD-INPUT* 	*QUERY-IO*)
 	(*STANDARD-OUTPUT* 	*QUERY-IO*)
 	(*PRINT-ARRAY*		t)
