@@ -21,6 +21,6 @@ Already?
 ### License
 MIT
 ### Tested with
-* SBCL/1.5.6
+* SBCL/1.5.7
 * CCL/1.11.5
 * ECL/16.1.3
