@@ -1,6 +1,7 @@
 ; vim: ft=lisp et
 (in-package :asdf)
 (defsystem :prompt-for.test
+  :version "0.0.0"
   :depends-on
   (:jingoh "prompt-for")
   :components

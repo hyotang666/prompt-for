@@ -31,6 +31,15 @@
 => FOO
 ,:stream NIL
 
+; Even if user input breaks PRED, PROMPT-FOR repeat to prompt.
+#?(evenp :not-integer) :signals condition
+
+#?(with-input-from-string(in ":not-integer 2")
+    (let((*query-io*
+	   (make-two-way-stream in (make-broadcast-stream))))
+      (prompt-for #'evenp "Type even number >> ")))
+=> 2
+
 #+signature(PROMPT-FOR (TARGET LIST) &REST ARGS)
 ; Specify compound type specifier.
 #?(with-input-from-string(in "0 foo")

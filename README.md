@@ -1,6 +1,7 @@
-# PROMPT-FOR
+# PROMPT-FOR 0.0.4
 ## What is this?
 Type safe user input.
+
 ### Current lisp world
 Now we get ROSWELL.
 
@@ -20,7 +21,9 @@ This is the time to implement it.
 Already?
 ### License
 MIT
+
 ### Tested with
-* SBCL/1.5.7
+* SBCL/1.5.8
 * CCL/1.11.5
 * ECL/16.1.3
+* CLISP/2.49

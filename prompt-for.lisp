@@ -80,10 +80,13 @@
   (multiple-value-bind(reader args)(retrieve-keyword-arg :by args #'read)
     (do-with-prompt-input((out args)
 			  (in(funcall reader)))
-      (if(funcall pred in)
-	(return in)
-	(format out"~&~S is type of ~S, not satisfies ~S."
-		in(type-of in) pred)))))
+      (handler-case(if(funcall pred in)
+		     (return in)
+		     (format out"~&~S is type of ~S, not satisfies ~S."
+			     in(type-of in) pred))
+	(error(condition)
+	  (format out "~&~A, breaks ~S."
+		  condition pred))))))
 
 (defmethod prompt-for((s (eql :secret))&rest args)
   "Get user input string silently."
