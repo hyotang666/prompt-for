@@ -1,4 +1,4 @@
-# PROMPT-FOR 0.0.4
+# PROMPT-FOR 1.0.0
 ## What is this?
 Type safe user input.
 

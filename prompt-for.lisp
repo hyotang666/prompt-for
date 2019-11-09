@@ -29,7 +29,7 @@
     (call-next-method)))
 
 (defmacro do-with-prompt-input(((out &rest format-args)
-				(var read-form))
+				(var reader))
 			       &body body)
   `(PROG((,out *STANDARD-OUTPUT*)
 	 ,var)
@@ -40,7 +40,7 @@
 			   (FORMAT T "~&Invalid input. ~S"C)
 			   (CLEAR-INPUT) ; ecl need especially symbol is input with unknown package specified.
 			   (GO :REC))))
-       (SETF ,var ,read-form))
+       (SETF ,var (funcall ,reader *query-io*)))
      (CLEAR-INPUT)
      ,@body
      (GO :REC)))
@@ -49,7 +49,7 @@
   "Ensure user input is type of TARGET."
   (multiple-value-bind(reader args)(retrieve-keyword-arg :by args #'read)
     (do-with-prompt-input((out args)
-			  (in(funcall reader)))
+			  (in reader))
       (if(typep in target)
 	(return in)
 	(format out"~&~S is type of ~S, not ~S."in(type-of in)target)))))
@@ -70,7 +70,7 @@
   "Ensure user input is type of TARGET."
   (multiple-value-bind(reader args)(retrieve-keyword-arg :by args #'read)
     (do-with-prompt-input((out args)
-			  (in(funcall reader)))
+			  (in reader))
       (if(typep in target)
 	(return in)
 	(format out"~&~S is type of ~S, not ~S."in(type-of in)target)))))
@@ -79,7 +79,7 @@
   "Ensure user input satisfies PRED."
   (multiple-value-bind(reader args)(retrieve-keyword-arg :by args #'read)
     (do-with-prompt-input((out args)
-			  (in(funcall reader)))
+			  (in reader))
       (handler-case(if(funcall pred in)
 		     (return in)
 		     (format out"~&~S is type of ~S, not satisfies ~S."
@@ -95,7 +95,7 @@
       (unless(eq reader sentinel)
 	(error "Keyword parameter :BY is invalid for :SECRET."))
       (do-with-prompt-input((out args)
-			    (in(secret-input)))
+			    (in #'secret-input))
 	(if(equal "" in)
 	  (format out "~&empty string is not allowed.")
 	  (return in))))))
@@ -114,7 +114,8 @@
 	   (setf(sb-posix:termios-lflag tm)
 	     (logior(sb-posix:termios-lflag tm)sb-posix:echo))
 	   (sb-posix:tcsetattr sb-sys:*tty* sb-posix:tcsanow tm)))
-       (defun secret-input()
+       (defun secret-input(stream)
+	 (declare(ignore stream))
 	 (echo-off)
 	 (unwind-protect(progn (clear-input sb-sys:*tty*)
 			       (read-line sb-sys:*tty*))

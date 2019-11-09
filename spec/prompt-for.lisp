@@ -64,8 +64,8 @@
 
 ; format-argument ;= T
 
-; reader := function as (function()T)
-; Specify reader function which consume from `*standard-input*`.
+; reader := function as (function(stream)T)
+; Specify reader function which consume from STREAM.
 ; The default is #'READ.
 #?(with-input-from-string(in "0 foo")
     (let((*query-io*(make-two-way-stream in *query-io*)))
@@ -107,7 +107,7 @@
 #?(with-input-from-string(in "foo/bar.lisp")
     (let((*query-io*(make-two-way-stream in *query-io*)))
       (prompt-for #'pathnamep "Type input file >> "
-		  :by (lambda()(pathname(read-line))))))
+		  :by (lambda(stream)(pathname(read-line stream))))))
 => #P"foo/bar.lisp"
 ,:stream NIL
 ,:test equalp
@@ -120,7 +120,7 @@
 ; Dsl macro for writing prompt-for.
 
 #+syntax
-(DO-WITH-PROMPT-INPUT ((out &rest format-args) (var read-form)) &body body) ; => result
+(DO-WITH-PROMPT-INPUT ((out &rest format-args) (var reader)) &body body) ; => result
 
 #?(do-with-prompt-input((0 1)(2 3))4)
 :expanded-to
@@ -133,7 +133,7 @@
 			(FORMAT T "~&Invalid input. ~S"PROMPT-FOR::C)
 			(CLEAR-INPUT)
 			(GO :REC))))
-    (SETF 2 3))
+    (SETF 2 (funcall 3 *query-io*)))
   (CLEAR-INPUT)
   4
   (GO :REC))
@@ -148,9 +148,9 @@
 ; format-argument := T, evaluated.
 
 ; var := symbol, not evaluated.
-; Bound by result of READ-FORM.
+; Bound by result of call READER.
 
-; read-form := form
+; reader := form which generate reader function.
 
 ; body := implicit-progn
 
