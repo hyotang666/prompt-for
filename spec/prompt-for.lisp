@@ -58,7 +58,7 @@
 
 ;;;; Arguments and Values:
 
-; args := {format-control format-argument* [{:by reader+}]}
+; args := {format-control format-argument* [{:by reader}]}
 
 ; format-control := string
 
@@ -94,7 +94,7 @@
 ,:stream *query-io*
 
 ;;;; Notes:
-; Return value is just user input value.
+; Return value is READER return value.
 #?(with-input-from-string(in "foo/bar.lisp")
     (let((*query-io*(make-two-way-stream in *query-io*)))
       (prompt-for (lambda(x)(pathname x))
@@ -143,7 +143,7 @@
 ; out := symbol, whith will be bound output stream.
 ; Not evaluated.
 
-; format-args := { format-control+ format-argument*}
+; format-args := { format-control format-argument*}
 ; format-control := string, evaluated.
 ; format-argument := T, evaluated.
 
