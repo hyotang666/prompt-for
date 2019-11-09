@@ -2,7 +2,7 @@
 (in-package :asdf)
 
 (defsystem :prompt-for
-  :version "1.0.0"
+  :version "2.0.0"
   :author "Shinichi Sato"
   :description "Type safe user input."
   :long-description #.(read-file-string(subpathname *load-pathname*
