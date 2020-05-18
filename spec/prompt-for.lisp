@@ -11,8 +11,8 @@
 #+syntax
 (PROMPT-FOR &rest sb-pcl::args) ; => result
 
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for 'symbol "Type symbol >> ")))
 => FOO
 ,:stream NIL
@@ -25,8 +25,8 @@
 
 #+signature(PROMPT-FOR (PRED FUNCTION) &REST ARGS)
 ; Prompt untill user input value which satisifes PRED comes.
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for #'symbolp "Type symbol >> ")))
 => FOO
 ,:stream NIL
@@ -34,24 +34,24 @@
 ; Even if user input breaks PRED, PROMPT-FOR repeat to prompt.
 #?(evenp :not-integer) :signals condition
 
-#?(with-input-from-string(in ":not-integer 2")
-    (let((*query-io*
-	   (make-two-way-stream in (make-broadcast-stream))))
+#?(with-input-from-string (in ":not-integer 2")
+    (let ((*query-io*
+           (make-two-way-stream in (make-broadcast-stream))))
       (prompt-for #'evenp "Type even number >> ")))
 => 2
 
 #+signature(PROMPT-FOR (TARGET LIST) &REST ARGS)
 ; Specify compound type specifier.
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for '(eql foo) "Type foo >> ")))
 => FOO
 ,:stream NIL
 
 #+signature(PROMPT-FOR (TARGET SYMBOL) &REST ARGS)
 ; Specify user input type name.
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for 'integer "Type integer >> ")))
 => 0
 ,:stream NIL
@@ -67,8 +67,8 @@
 ; reader := function as (function(stream)T)
 ; Specify reader function which consume from STREAM.
 ; The default is #'READ.
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for 'string "Type string >> " :by #'read-line)))
 => "0 foo"
 ,:stream NIL
@@ -81,33 +81,33 @@
 
 ;;;; Side-Effects:
 ; Reading/Writing `*QUERY-IO*`.
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for 'integer "Type integer >> ")))
 :outputs "Type integer >> "
 ,:stream *query-io*
 
-#?(with-input-from-string(in "0 foo")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "0 foo")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for 'symbol "Type symbol >> ")))
 :outputs #.(format nil "Type symbol >> ~%0 is type of ~S, not SYMBOL.Type symbol >> "(type-of 0))
 ,:stream *query-io*
 
 ;;;; Notes:
 ; Return value is READER return value.
-#?(with-input-from-string(in "foo/bar.lisp")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
-      (prompt-for (lambda(x)(pathname x))
-		  "Type input file >> "
-		  :by #'read-line)))
+#?(with-input-from-string (in "foo/bar.lisp")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
+      (prompt-for (lambda (x) (pathname x))
+                  "Type input file >> "
+                  :by #'read-line)))
 => "foo/bar.lisp"
 ,:stream NIL
 ,:test string=
 
-#?(with-input-from-string(in "foo/bar.lisp")
-    (let((*query-io*(make-two-way-stream in *query-io*)))
+#?(with-input-from-string (in "foo/bar.lisp")
+    (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for #'pathnamep "Type input file >> "
-		  :by (lambda(stream)(pathname(read-line stream))))))
+                  :by (lambda (stream) (pathname (read-line stream))))))
 => #P"foo/bar.lisp"
 ,:stream NIL
 ,:test equalp
@@ -122,17 +122,17 @@
 #+syntax
 (DO-WITH-PROMPT-INPUT ((out &rest format-args) (var reader)) &body body) ; => result
 
-#?(do-with-prompt-input((0 1)(2 3))4)
+#?(do-with-prompt-input((0 1) (2 3)) 4)
 :expanded-to
 (PROG((0 *STANDARD-OUTPUT*)
       2)
   :REC
   (APPLY #'FORMAT T 1)
   (FORCE-OUTPUT)
-  (HANDLER-BIND((ERROR(LAMBDA(PROMPT-FOR::C)
-			(FORMAT T "~&Invalid input. ~S"PROMPT-FOR::C)
-			(CLEAR-INPUT)
-			(GO :REC))))
+  (HANDLER-BIND ((ERROR (LAMBDA (PROMPT-FOR::C)
+                          (FORMAT T "~&Invalid input. ~S"PROMPT-FOR::C)
+                          (CLEAR-INPUT)
+                          (GO :REC))))
     (SETF 2 (funcall 3 *query-io*)))
   (CLEAR-INPUT)
   4
