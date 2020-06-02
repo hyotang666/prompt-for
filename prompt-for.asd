@@ -2,12 +2,16 @@
 (in-package :asdf)
 
 (defsystem :prompt-for
-  :version "2.0.2"
+  :version "2.0.3"
   :author "Shinichi Sato"
   :description "Type safe user input."
   :long-description #.(read-file-string(subpathname *load-pathname*
                                                     "README.md"))
   :license "MIT"
+  :depends-on
+  (
+   (:feature :sbcl (:require "sb-posix")) ; POSIX interface.
+   )
   :components((:file "prompt-for")))
 
 ;; These forms below are added by JINGOH.GENERATOR.
