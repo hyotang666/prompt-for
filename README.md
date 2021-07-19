@@ -2,8 +2,21 @@
 ## What is this?
 Type safe user input.
 
-## Alternatives.
-Missing.
+## Alternatives and differences.
+
+|            | [duologue]       | prompt-for     |
+| ---        | ----------       | ----------     |
+| coloring   | \*               |                |
+| completion | \*               |                |
+| choosing   | \*               |                |
+| email      | \*               |                |
+| url        | \*               |                |
+| datetime   | \*               |                |
+| secret     |                  | sbcl only      |
+| types      | integer pathname | any-lisp-types |
+| interact   | standard-io      | query-io       |
+
+[duologue]: https://github.com/mmontone/duologue/
 
 ## Usage
 
