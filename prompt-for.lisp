@@ -42,7 +42,6 @@
                                       ; with unknown package specified.
                         (go :rec))))
        (setf ,var (funcall ,reader *query-io*)))
-     (clear-input)
     ,@body
      (go :rec)))
 

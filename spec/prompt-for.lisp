@@ -134,7 +134,6 @@
                           (CLEAR-INPUT)
                           (GO :REC))))
     (SETF 2 (funcall 3 *query-io*)))
-  (CLEAR-INPUT)
   4
   (GO :REC))
 
