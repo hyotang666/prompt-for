@@ -3,10 +3,12 @@
 
 (defsystem :prompt-for
   :version "2.0.4"
-  :author "Shinichi Sato"
+  :author "SATO Shinichi"
   :description "Type safe user input."
   :long-description #.(read-file-string(subpathname *load-pathname*
                                                     "README.md"))
+  :source-control (:git "git@github.com:hyotang666/prompt-for")
+  :bug-tracker "https://github.com/hyotang666/prompt-for/issues"
   :license "MIT"
   :depends-on
   (
