@@ -2,7 +2,7 @@
 (in-package :asdf)
 
 (defsystem :prompt-for
-  :version "2.0.4"
+  :version "2.0.5"
   :author "SATO Shinichi"
   :description "Type safe user input."
   :long-description #.(read-file-string(subpathname *load-pathname*
@@ -13,6 +13,7 @@
   :depends-on
   (
    (:feature :sbcl (:require "sb-posix")) ; POSIX interface.
+   "uiop"       ; For detecting the OS. Implicitly depending on via asdf.
    )
   :components((:file "prompt-for")))
 

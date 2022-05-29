@@ -6,8 +6,7 @@
 
 (in-package :prompt-for)
 
-(defgeneric prompt-for
-    (target &rest args))
+(defgeneric prompt-for (target &rest args))
 
 (defmethod prompt-for :around (target &rest args)
   (declare (ignore args target))
@@ -100,7 +99,7 @@
 ;;; Stolen from https://stackoverflow.com/questions/39797560/common-lisp-how-to-mask-keyboard-input
 
 #.(or ; in order to avoid #-
-      #+sbcl
+      #+(and :sbcl :unix)
       '(progn
         (defun echo-off ()
           (let ((tm (sb-posix:tcgetattr sb-sys:*tty*)))
@@ -122,7 +121,9 @@
                  (funcall reader sb-sys:*tty*))
               (echo-on)))))
       ;; as default
-      (warn "PROMPT-FOR: the method specialized :SECRET is not supported in ~A"
-            (lisp-implementation-type))
+      (warn
+        "PROMPT-FOR: the method specialized :SECRET is not supported ~A in ~S."
+        (lisp-implementation-type) (uiop:detect-os))
       '(defun secret-input ()
-         (error "not supported in ~A" (lisp-implementation-type))))
+         (error "not supported ~A in ~S" (lisp-implementation-type)
+                (uiop:detect-os))))
