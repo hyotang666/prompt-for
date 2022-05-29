@@ -6,6 +6,8 @@
 
 (in-package :prompt-for)
 
+(defvar *default-reader* #'read)
+
 (defgeneric prompt-for (target &rest args))
 
 (defmethod prompt-for :around (target &rest args)
@@ -57,7 +59,7 @@ evaluate the body form iteratively until CL:RETURN is successfully called."
 (defmethod prompt-for ((target symbol) &rest args)
   "Ensure user input is type of TARGET."
   (multiple-value-bind (reader args)
-      (retrieve-keyword-arg :by args #'read)
+      (retrieve-keyword-arg :by args *default-reader*)
     (do-with-prompt-input ((out args) (in reader))
       (if (typep in target)
           (return in)
@@ -80,7 +82,7 @@ e.g. (retrieve-keyword-arg :by '(:by 1 :by 2 :by 3)) => 3, (:by 1 :by 2)"
 (defmethod prompt-for ((target list) &rest args)
   "Ensure user input is type of TARGET."
   (multiple-value-bind (reader args)
-      (retrieve-keyword-arg :by args #'read)
+      (retrieve-keyword-arg :by args *default-reader*)
     (do-with-prompt-input ((out args) (in reader))
       (if (typep in target)
           (return in)
@@ -89,7 +91,7 @@ e.g. (retrieve-keyword-arg :by '(:by 1 :by 2 :by 3)) => 3, (:by 1 :by 2)"
 (defmethod prompt-for ((pred function) &rest args)
   "Ensure user input satisfies PRED."
   (multiple-value-bind (reader args)
-      (retrieve-keyword-arg :by args #'read)
+      (retrieve-keyword-arg :by args *default-reader*)
     (do-with-prompt-input ((out args) (in reader))
       (handler-case
           (if (funcall pred in)
@@ -102,7 +104,7 @@ e.g. (retrieve-keyword-arg :by '(:by 1 :by 2 :by 3)) => 3, (:by 1 :by 2)"
 (defmethod prompt-for ((s (eql :secret)) &rest args)
   "Get user input string silently."
   (multiple-value-bind (reader args)
-      (retrieve-keyword-arg :by args #'read)
+      (retrieve-keyword-arg :by args *default-reader*)
     (do-with-prompt-input ((out args) (in (secret-reader reader)))
       (if (equal "" in)
           (format out "~&empty string is not allowed.")
