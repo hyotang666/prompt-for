@@ -124,6 +124,6 @@
       (warn
         "PROMPT-FOR: the method specialized :SECRET is not supported ~A in ~S."
         (lisp-implementation-type) (uiop:detect-os))
-      '(defun secret-input ()
+      '(defun secret-reader ()
          (error "not supported ~A in ~S" (lisp-implementation-type)
                 (uiop:detect-os))))
