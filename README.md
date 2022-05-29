@@ -4,17 +4,17 @@ Type safe user input.
 
 ## Alternatives and differences.
 
-|            | [duologue]       | prompt-for     |
-| ---        | ----------       | ----------     |
-| coloring   | \*               |                |
-| completion | \*               |                |
-| choosing   | \*               |                |
-| email      | \*               |                |
-| url        | \*               |                |
-| datetime   | \*               |                |
-| secret     |                  | sbcl only      |
-| types      | integer pathname | any-lisp-types |
-| interact   | standard-io      | query-io       |
+|            | [duologue]       | prompt-for             |
+| ---        | ----------       | ----------             |
+| coloring   | \*               |                        |
+| completion | \*               |                        |
+| choosing   | \*               |                        |
+| email      | \*               |                        |
+| url        | \*               |                        |
+| datetime   | \*               |                        |
+| secret     |                  | sbcl with unix os only |
+| types      | integer pathname | any-lisp-types         |
+| interact   | standard-io      | query-io               |
 
 [duologue]: https://github.com/mmontone/duologue/
 
@@ -99,10 +99,10 @@ Already?
 MIT
 
 ### Tested with
-* SBCL/2.1.7
+* SBCL/2.2.4
 * CCL/1.12
 * CLISP/2.49
 * ECL/21.2.1
 * Allegro/10.1
 * CMUCL/21D
-* ABCL/1.8.0
+* ABCL/1.9.0
