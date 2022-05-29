@@ -64,16 +64,18 @@ evaluate the body form iteratively until CL:RETURN is successfully called."
           (format out "~&~S is type of ~S, not ~S." in (type-of in) target)))))
 
 (defun retrieve-keyword-arg (key args &optional default)
-  (if (eq key (car args)) ; for short cut.
-      (values (second args) (cddr args))
-      (labels ((rec (list)
-                 (if (endp (cdr list))
-                     (values default args)
-                     (if (eq key (second list))
-                         (values (third list)
-                                 (progn (rplacd list (cdddr list)) args))
-                         (rec (cdr list))))))
-        (rec args))))
+  "Return two values.
+  1. The value of the KEY in ARGS if exists, otherwise DEFAULT.
+  2. ARGS which is lacking the KEY value pair.
+NOTE: Only check last two conses. Any KEY in front of it is ignored.
+e.g. (retrieve-keyword-arg :by '(:by 1 :by 2 :by 3)) => 3, (:by 1 :by 2)"
+  (labels ((rec (list)
+             (if (not (endp (cdddr list)))
+                 (rec (cdr list))
+                 (if (eq key (cadr list))
+                     (values (caddr list) (progn (rplacd list nil) args))
+                     (values default args)))))
+    (rec args)))
 
 (defmethod prompt-for ((target list) &rest args)
   "Ensure user input is type of TARGET."
