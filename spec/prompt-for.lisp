@@ -125,15 +125,17 @@
 #?(do-with-prompt-input((0 1) (2 3)) 4)
 :expanded-to
 (PROG((0 *STANDARD-OUTPUT*)
-      2)
+      2
+      (reader 3)
+      (format-args 1))
   :REC
-  (APPLY #'FORMAT T 1)
+  (APPLY #'FORMAT T format-args)
   (FORCE-OUTPUT)
   (HANDLER-BIND ((ERROR (LAMBDA (PROMPT-FOR::C)
                           (FORMAT T "~&Invalid input. ~S"PROMPT-FOR::C)
                           (CLEAR-INPUT)
                           (GO :REC))))
-    (SETF 2 (funcall 3 *query-io*)))
+    (SETF 2 (funcall reader *query-io*)))
   4
   (GO :REC))
 

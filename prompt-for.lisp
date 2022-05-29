@@ -29,20 +29,30 @@
     (call-next-method)))
 
 (defmacro do-with-prompt-input
-          (((out &rest format-args) (var reader)) &body body)
-  `(prog ((,out *standard-output*) ,var)
-    :rec
-     (apply #'format t ,@format-args)
-     (force-output)
-     (handler-bind ((error
-                      (lambda (c)
-                        (format t "~&Invalid input. ~S" c)
-                        (clear-input) ; ecl need especially symbol is input
-                                      ; with unknown package specified.
-                        (go :rec))))
-       (setf ,var (funcall ,reader *query-io*)))
-    ,@body
-     (go :rec)))
+          (((out format-args) (var reader)) &body body)
+  "(DO-WITH-PROMPT-INPUT ((out { format-args }*) (var reader)) { body }*)
+  out := SYMBOL which will be bound by the output stream.
+  format-args := An expression to generate a list of format control and its arguments for prompt.
+  var := SYMBOL which will be bound by the return value of the READER.
+  reader := An expression to generate (FUNCTION (STREAM) T) to read user input.
+  body := implicit progn.
+Achieving the context to handle any errors, especially about user input,
+evaluate the body form iteratively until CL:RETURN is successfully called."
+  (let ((?reader (gensym "READER")) (?format-args (gensym "FORMAT-ARGS")))
+    `(prog ((,out *standard-output*) ,var (,?reader ,reader)
+            (,?format-args ,format-args))
+      :rec
+       (apply #'format t ,?format-args)
+       (force-output)
+       (handler-bind ((error
+                        (lambda (c)
+                          (format t "~&Invalid input. ~S" c)
+                          (clear-input) ; ecl need especially symbol is input
+                                        ; with unknown package specified.
+                          (go :rec))))
+         (setf ,var (funcall ,?reader *query-io*)))
+      ,@body
+       (go :rec))))
 
 (defmethod prompt-for ((target symbol) &rest args)
   "Ensure user input is type of TARGET."
