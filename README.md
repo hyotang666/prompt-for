@@ -16,7 +16,9 @@ Type safe user input.
 | types      | integer pathname | any-lisp-types         |
 | interact   | standard-io      | query-io               |
 
-[duologue]: https://github.com/mmontone/duologue/
+### See also.
+* [query-repl]
+* [text-query]
 
 ## Usage
 
@@ -125,3 +127,9 @@ MIT
 * Allegro/10.1
 * CMUCL/21D
 * ABCL/1.9.0
+
+<!-- Links -->
+[query-repl]:https://github.com/hyotang666/query-repl
+[text-query]:https://www.cliki.net/text-query
+[duologue]:https://github.com/mmontone/duologue/
+
