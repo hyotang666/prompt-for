@@ -91,6 +91,25 @@ WTF dude! It does not satisfy EVENP!
 Input even integer>>
 ```
 
+### TIPS
+`prompt-for` returns user input.
+
+```lisp
+* (prompt-for:prompt-for #'find-class "~&Input class name >> ")
+Input class name >> stream
+STREAM
+```
+
+If you want e.g. stream object rather than a name even if user input is a class name, you can use `prompt-for:*default-reader*`.
+
+```lisp
+* (let ((prompt-for:*default-reader*
+          (lambda (input) (find-class (read input)))))
+    (prompt-for:prompt-for t "~&Input class name >> "))
+Input class name >> stream
+#<SB-PCL:SYSTEM-CLASS COMMON-LISP:STREAM>
+```
+
 ## From developer
 
 ### Product's goal
