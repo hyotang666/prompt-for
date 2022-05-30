@@ -67,12 +67,15 @@
 ; reader := function as (function(stream)T)
 ; Specify reader function which consume from STREAM.
 ; The default is #'READ.
+; NOTE: This feature is deprecated, will removed in the future.
 #?(with-input-from-string (in "0 foo")
     (let ((*query-io* (make-two-way-stream in *query-io*)))
       (prompt-for 'string "Type string >> " :by #'read-line)))
 => "0 foo"
 ,:stream NIL
 ,:test string=
+,:ignore-signals prompt-for::deprecated
+,:timeout 5
 
 ; result := T ; user input which satisifes TARGET.
 
@@ -96,18 +99,18 @@
 ;;;; Notes:
 ; Return value is READER return value.
 #?(with-input-from-string (in "foo/bar.lisp")
-    (let ((*query-io* (make-two-way-stream in *query-io*)))
+    (let ((*query-io* (make-two-way-stream in *query-io*))
+	  (*default-reader* #'read-line))
       (prompt-for (lambda (x) (pathname x))
-                  "Type input file >> "
-                  :by #'read-line)))
+                  "Type input file >> ")))
 => "foo/bar.lisp"
 ,:stream NIL
 ,:test string=
 
 #?(with-input-from-string (in "foo/bar.lisp")
-    (let ((*query-io* (make-two-way-stream in *query-io*)))
-      (prompt-for #'pathnamep "Type input file >> "
-                  :by (lambda (stream) (pathname (read-line stream))))))
+    (let ((*query-io* (make-two-way-stream in *query-io*))
+	  (*default-reader* (lambda (stream) (pathname (read-line stream)))))
+      (prompt-for #'pathnamep "Type input file >> ")))
 => #P"foo/bar.lisp"
 ,:stream NIL
 ,:test equalp

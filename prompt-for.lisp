@@ -65,6 +65,16 @@ evaluate the body form iteratively until CL:RETURN is successfully called."
           (return in)
           (format out "~&~S is type of ~S, not ~S." in (type-of in) target)))))
 
+(define-condition deprecated (style-warning)
+  ((key :initarg :key :reader key))
+  (:report
+   (lambda (this output)
+     (format output
+             #.(concatenate 'string
+                            "Keyword argument ~S for ~S is deprecated from version 3.1. ~:@_"
+                            "Bind ~S instead.")
+             (key this) 'prompt-for '*default-reader*))))
+
 (defun retrieve-keyword-arg (key args &optional default)
   "Return two values.
   1. The value of the KEY in ARGS if exists, otherwise DEFAULT.
@@ -75,7 +85,12 @@ e.g. (retrieve-keyword-arg :by '(:by 1 :by 2 :by 3)) => 3, (:by 1 :by 2)"
              (if (not (endp (cdddr list)))
                  (rec (cdr list))
                  (if (eq key (cadr list))
-                     (values (caddr list) (progn (rplacd list nil) args))
+                     (values (caddr list)
+                             (progn
+                              (warn 'deprecated :key key)
+                              (sleep 1) ; as penalty. will be increased in the future.
+                              (rplacd list nil)
+                              args))
                      (values default args)))))
     (rec args)))
 
