@@ -2,7 +2,7 @@
 
 (defpackage :prompt-for
   (:use :cl)
-  (:export #:prompt-for #:do-with-prompt-input))
+  (:export #:prompt-for #:do-with-prompt-input *default-reader*))
 
 (in-package :prompt-for)
 
